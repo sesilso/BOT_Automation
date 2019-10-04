@@ -1,0 +1,24 @@
+{
+    "name": "art",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "testscript": "node vars.js",
+      "testBotFlow": "codeceptjs run --steps --grep @MapearFlow",
+      "testLogin2": "codeceptjs run --steps"
+    },
+    "keywords": [],
+    "author": "Sergio Silva",
+    "license": "ISC",
+    "devDependencies": {
+      "codeceptjs": "^2.0.4",
+      "mocha": "^6.2.0",
+      "mochawesome": "^3.1.1",
+      "puppeteer": "^1.19.0"
+    },
+    "dependencies": {
+      "xlsx": "^0.14.4"
+    }
+  }
+  
