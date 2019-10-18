@@ -1,4 +1,3 @@
-# BOT_Automation
 1.Crear Carpeta proyecto. ubicar path del commandpront dentro de esa carpeta
 2.> npm install codeceptjs puppeteer --save
 3.> npx codeceptjs init    (para configurar)
@@ -71,3 +70,122 @@
 	.......
 
 14. npm run testGlobalFlow
+
+
+
+para conectar a SQLSErver:
+npm install mssql
+npm install express
+
+* se instalara dependencias en node_modules
+
+en clase de coneccion:
+
+//////////////////////////////////////////////////////////////////////////////
+
+const sql = require("mssql");
+
+const config = {
+    user: 'usr_mobile',
+    password: 'Belcorp2020$',
+    server: 'AWNTS74', 
+    database: 'BelcorpPeru'
+}
+
+let myquery = "select top 10 DocumentoIdentidad,Nombre from Usuario"
+
+resultado = []
+sql.connect(config).then((conn) => 
+    conn.query(myquery)
+        .then((v) => {            
+
+            for (let i = 0; i < v.recordset.length; i++) {
+                var obj = {Nombre: v.recordset[i].Nombre, DocumentoIdentidad: v.recordset[i].DocumentoIdentidad}    
+                resultado.push(obj)              
+            }
+
+            MycallbackFix(null, resultado);
+
+        }).then(() => conn.close())
+)
+
+function MycallbackFix(err, result) {
+    
+    for (let i = 0; i < result.length; i++) {
+        console.log(result[i].Nombre + ' > ' + result[i].DocumentoIdentidad);        
+    }
+
+}
+
+//////////////////////////////////////////////////////////////////////////////
+
+consumir un servicio con una funcion asincrona en archivo (A) y llamar a esa funcion desde otro archivo (B)
+..........................................................................................................
+
+Archivo (A)
+----------
+var request = require('request');
+
+function doRequest() {
+
+    var url = 'https://ws.somosbelcorp.com/api/Login';
+
+    var headers = {
+    'Content-Type' : 'text/plain'
+    };
+
+    var form = {
+        grant_type : "password",
+        username : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJEb2N1bWVudG8iOiIwMDIwODI0NzE1In0.mCKtOmbtMlnWGIMHKQqrW69b9iinzUT4GgOguBjDMCY",
+        pais : "CO",
+        tipoAutenticacion : "3"
+    };
+
+    return new Promise(function (resolve, reject) {
+    
+        request.post({ url: url, form: form, headers: headers }, function (error, res, body) {
+            if (!error && res.statusCode == 200) {
+                resolve(body);
+              } else {
+                reject(error);
+              }
+        });    
+
+    });
+  }
+
+  //exportar la funcion para ser llamada desde otro archivo
+  module.exports.doRequest = doRequest
+
+
+
+Archivo (B)
+----------
+
+const objvar = require('./probando_request')
+
+async function main() {
+    let res = await objvar.doRequest();
+    var bodyValues = JSON.parse(res);
+    console.log("nombreConsultora : " + bodyValues.nombreConsultora);
+}
+  
+main();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
